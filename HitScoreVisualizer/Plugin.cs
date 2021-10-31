@@ -1,20 +1,17 @@
-﻿using HarmonyLib;
-using System.Reflection;
-using HitScoreVisualizer.Extensions;
+using HarmonyLib;
+using HitScoreVisualizer.HarmonyPatches;
 using HitScoreVisualizer.Installers;
 using HitScoreVisualizer.Settings;
+using Hive.Versioning;
 using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
 using IPA.Loader;
 using IPA.Logging;
-using SiraUtil.Attributes;
 using SiraUtil.Zenject;
-using Version = SemVer.Version;
 
 namespace HitScoreVisualizer
 {
-	[Slog]
 	[Plugin(RuntimeOptions.DynamicInit)]
 	public class Plugin
 	{
@@ -22,11 +19,9 @@ namespace HitScoreVisualizer
 
 		private static Harmony? _harmonyInstance;
 		private static PluginMetadata? _metadata;
-		private static string? _name;
-		private static Version? _version;
 
-		public static string Name => _name ??= _metadata?.Name ?? Assembly.GetExecutingAssembly().GetName().Name;
-		public static Version Version => _version ??= _metadata?.Version ?? Assembly.GetExecutingAssembly().GetName().Version.ToSemVerVersion();
+		public static string Name => _metadata?.Name!;
+		public static Version Version => _metadata?.HVersion!;
 
 		[Init]
 		public void Init(Logger logger, Config config, PluginMetadata pluginMetadata, Zenjector zenject)
@@ -41,14 +36,13 @@ namespace HitScoreVisualizer
 		[OnEnable]
 		public void OnEnable()
 		{
-			_harmonyInstance = new Harmony(HARMONY_ID);
-			_harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+			_harmonyInstance = Harmony.CreateAndPatchAll(typeof(FlyingScoreEffectPatch), HARMONY_ID);
 		}
 
 		[OnDisable]
 		public void OnDisable()
 		{
-			_harmonyInstance?.UnpatchAll(HARMONY_ID);
+			_harmonyInstance?.UnpatchSelf();
 			_harmonyInstance = null;
 		}
 	}

@@ -7,9 +7,9 @@ A fairly simple mod that allows you to heavily customize the appearance of hit s
 
 This mod requires a few other mods in order to work.
 
-- BeatSaberMarkupLanguage v1.5.2 or higher
-- BSIPA v4.1.6 or higher
-- SiraUtil v2.5.3 or higher
+- BSIPA v4.2.0 or higher
+- BeatSaberMarkupLanguage v1.5.5 or higher
+- SiraUtil v2.5.8 or higher
 
 The installation is fairly simple.
 
@@ -48,6 +48,11 @@ As you might have noticed, each config has a text below its name that describes 
 | Compatible | OK - {Version} | The config file is just fine, nothing special needs to happen. Shows the version for which it was originally made. |
 | NewerVersion | Config is too new. Targets version {Version} | The config file is made for a newer version of HSV and therefore won't be allowed to be loaded in as it's correct workings cannot be guaranteed. |
 
+### Config migration remark
+If one of your configs needed migration upon selection. The old config will automagically be backed up to the folder `UserData\HitScoreVisualizer\Backups` (will be created if it doesn't exist) and the migrated config will be saved to the original file instead.
+However, all configs placed in that folder will **NOT** be loaded by HSV. This behavior is by-design and is intended as a safety measure, to prevent accidental migration issues with backups.
+If you want revert to a backup, move one of the files back to the main folder (or another folder in the main folder if you're using a folder structure.)
+
 
 ## How-To Config? (aka config explained)
 
@@ -59,8 +64,8 @@ You can use that file as a starting point in case you want to customize it. Just
 | majorVersion<br>minorVersion<br>patchVersion | Indicates the version of HSV that the config is made for specifically. | N/A |
 | isDefaultConfig | Indicates whether this file is a default config file. This also means that it will be overwritten by the built-in default config if migration is required. | true or false |
 | displayMode | - "format": Allows you to use format tokens in the Judgment texts. (More info later on)<br>- "numeric": Displays only the note score. (Eg: 115)<br>- "textOnly": Displays only the Judgment text. (Eg: Purrfect)<br>- "scoreOnTop": Displays both (numeric score above Judgment text).<br>- Anything else or empty: Displays both (Judgment text above numeric score). | "format"<br>"numeric"<br>"textOnly"<br>"scoreOnTop"<br>"" |
-| useFixedPos | Whether or not to display the hit scores on a fixed position. When enabled, this will also hide the previous score if a new one appears. | true or false |
-| fixedPosX<br>fixedPosY<br>fixedPosZ| The coordinate where the hit scores should be shown when `useFixedPos` is set to `true` | floats |
+| fixedPosition| The coordinate object that defines the fixed location where the hit scores have to be shown.<br>Either leave this out or set as `null` to fully disable. | {<br>"x": 0.0,<br>"y": 3.0,<br>	"z": -2.0<br>}<br><br>null |
+| targetPositionOffset| The coordinate object that indicates how much the hitscore fade animation target position has to be offset.<br>Note: If a fixed position is defined in the config, that one will take priority over this one and this will be fully ignored.<br>Either leave this out or set as `null` to fully disable.  | {<br>"x": 0.0,<br>"y": 3.0,<br>	"z": -2.0<br>}<br><br>null |
 | doIntermediateUpdates | When enabled, Judgments will be updated multiple times. This will make score popups more accurate during a brief period before the note's score is finalized, at some cost of performance. | true or false |
 | timeDependencyDecimalPrecision | The number of decimal places to show the time dependence to.<br> **Must be between 0 and 99, inclusive** | ints |
 | timeDependencyDecimalOffset | Which power of 10 to multiply the time dependence by (time dependence is from 0 - 1).<br> **Must be between 0 and 38, inclusive**  | ints |
@@ -135,7 +140,7 @@ This can be done using either of the following options:
 </Project>
 ```
 
-### Changelog
+## Changelog
 x.x.x: Probably created and such, no clue here...<br>
 2.0.2: Bug fixes and performance improvements. If you've been noticing lag, try disabling the fade option on all Judgments in the config.<br>
 2.1.0: Added display mode "format" (see below).<br>
@@ -144,10 +149,13 @@ x.x.x: Probably created and such, no clue here...<br>
 x.x.x: Probably a few more changes and such, no clue here either...<br>
 3.0.0: Big rewrite! Support for changing configs at runtime, better validation, ...
 
+## Useful links
 
-### Credits
+[HSV Config Creator by @MoreOwO](https://github.com/MoreOwO/HSV-Config-Creator/releases/latest): A program that helps you create configs for HSV.
+
+## Credits
 Credit where credit is due:
- - @artemiswkearney for writing the original mod
+ - [@artemiswkearney](https://github.com/artemiswkearney) for writing the original mod
  - @AntRazor for the mod idea/request and default config input in the original mod
  - @wulkanat for the default config input in the original mod
  - Everyone in #pc-mod-dev (and the rest of the server) for the love and support. ❤
